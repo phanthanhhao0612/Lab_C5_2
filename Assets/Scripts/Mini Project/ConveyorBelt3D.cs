@@ -1,22 +1,19 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ConveyorBelt3D : MonoBehaviour
+public class ConveyorBelt_CC : MonoBehaviour
 {
-    public Vector3 direction = Vector3.forward;
+    public Vector3 moveDirection = Vector3.forward;
     public float speed = 2f;
 
-    void OnCollisionStay(Collision collision)
+    private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        Rigidbody rb = collision.rigidbody;
-        if (rb != null)
-        {
-            rb.AddForce(direction.normalized * speed, ForceMode.VelocityChange);
-        }
+        CharacterController controller = hit.controller;
 
-        CharacterController cc = collision.collider.GetComponent<CharacterController>();
-        if (cc != null)
+        // Chỉ đẩy khi đứng trên mặt băng chuyền
+        if (Vector3.Dot(hit.normal, Vector3.up) > 0.5f)
         {
-            cc.Move(direction.normalized * speed * Time.deltaTime);
+            Vector3 move = moveDirection.normalized * speed * Time.deltaTime;
+            controller.Move(move);
         }
     }
 }
